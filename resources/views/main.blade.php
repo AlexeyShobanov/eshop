@@ -3,7 +3,7 @@
 @section('title', "Главная")
 
 @section('content')
-    @include('partials.header')
+    @include('parts.header')
 
     <main class="py-16 lg:py-20">
         <div class="container">
@@ -95,14 +95,14 @@
                 <!-- Products list -->
                 <div
                     class="products grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-x-8 gap-y-8 lg:gap-y-10 2xl:gap-y-12 mt-8">
-                    @@include('parts/products/1.html')
-                    @@include('parts/products/2.html')
-                    @@include('parts/products/3.html')
-                    @@include('parts/products/4.html')
-                    @@include('parts/products/5.html')
-                    @@include('parts/products/6.html')
-                    @@include('parts/products/7.html')
-                    @@include('parts/products/8.html')
+                    @include('parts/products/1')
+                    @include('parts/products/2')
+                    @include('parts/products/3')
+                    @include('parts/products/4')
+                    @include('parts/products/5')
+                    @include('parts/products/6')
+                    @include('parts/products/7')
+                    @include('parts/products/8')
                 </div>
 
                 <div class="mt-12 text-center">
@@ -163,5 +163,6 @@
         </div>
     </main>
 
-    @include('partials/footer')
+    @include('parts/footer')
+
 @endsection

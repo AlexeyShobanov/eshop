@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Logging\Telegram;
 
+use App\Exceptions\TelegramExeption;
 use App\Services\Telegram\TelegramBotApi;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
@@ -26,6 +27,9 @@ final class TelegramLoggerHandler extends AbstractProcessingHandler
         parent::setFormatter($formatter);
     }
 
+    /**
+     * @throws TelegramExeption
+     */
     protected function write(array $record): void
     {
         TelegramBotApi::sendMessage(

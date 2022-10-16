@@ -124,6 +124,7 @@ return [
             'via' => TelegramLoggerFactory::class,
             'level' => env('LOG_LEVEL', 'debug'),
             'chat_id' => -env('TELEGRAM_CHAT_ID', ''),
+//            'chat_id' => 123,
             'token' => env('TELEGRAM_TOKEN', ''),
         ],
     ],
