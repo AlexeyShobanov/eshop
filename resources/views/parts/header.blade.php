@@ -3,7 +3,7 @@
     <div class="container">
         <div class="header-inner flex items-center justify-between lg:justify-start">
             <div class="header-logo shrink-0">
-                <a href="index.html" rel="home">
+                <a href="{{ route("main") }}" rel="home">
                     <img src="./storage/images/logo.svg"
                          class="w-[120px] xs:w-[148px] md:w-[201px] h-[30px] xs:h-[36px] md:h-[50px]" alt="CutCode">
                 </a>
