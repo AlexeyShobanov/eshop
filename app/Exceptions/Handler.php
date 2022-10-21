@@ -37,28 +37,16 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-//    public function render(
-//        $request,
-//        Throwable $exception
-//    ): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response {
-//        if ($exception instanceof TelegramExeption) {
-//            return response()->view('errors.custom', [], 500);
-//        }
-//
-//        return parent::render($request, $exception);
-//    }
-
-    /**
-     * Register the exception handling callbacks for the application.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->reportable(function (Throwable $e) {
             if (app()->bound('sentry')) {
                 app('sentry')->captureException($e);
             }
         });
+
+//        $this->renderable(function (NotFoundHttpException $e) {
+//            return response()->view('errors/404');
+//        });
     }
 }

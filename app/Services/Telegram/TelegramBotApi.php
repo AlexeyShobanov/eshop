@@ -4,29 +4,27 @@ declare(strict_types=1);
 
 namespace App\Services\Telegram;
 
-use App\Exceptions\TelegramExeption;
-use Exception;
+use App\Services\Telegram\Exceptions\TelegramBotApiException;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 final class TelegramBotApi
 {
     public const HOST = 'https://api.telegram.org/bot';
 
-    /**
-     * @throws TelegramExeption
-     */
     public static function sendMessage(string $token, int $chatId, string $text): bool
     {
-        $response = Http::get(self::HOST . $token . '/sendMessage', [
-            'chat_id' => $chatId,
-            'text' => $text,
-        ]);
         try {
-            $response->throw();
-        } catch (Exception $e) {
-            throw new TelegramExeption('This is telegram exception');
+            $response = Http::get(self::HOST . $token . '/sendMessage', [
+                'chat_id' => $chatId,
+                'text' => $text,
+            ])->throw(); // throw() позволяет еще поймать все серверные и клиентские ошибки 4хх и 5хх
+            return $response->ok();
+        } catch (Throwable $e) {
+            report(
+                new TelegramBotApiException($e->getMessage())
+            );  // здесь мы глушим Exception, но генерим репорт в стандартные каналы
+            return false;
         }
-
-        return $response->ok();
     }
 }
