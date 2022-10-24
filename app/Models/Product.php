@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Models\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Product extends Model
 {
     use HasFactory;
+    use HasSlug;
 
     protected $fillable = [
         'title',
@@ -19,17 +21,7 @@ class Product extends Model
         'price',
     ];
 
-    //    создаем генерацию слага в boot
-    protected static function boot()
-    {
-        parent::boot();
-
-//        TODO 3td lesson
-//        воспользуемся событием перед созданием
-        static::creating(function (Product $product) {
-            $product->slug = $product->slug ?? str($product->title)->slug();
-        });
-    }
+    //    создаем генерацию слага в boot - теперь этоного нет, вынесено в трейт HasSlug
 
     public function brand(): BelongsTo
     {

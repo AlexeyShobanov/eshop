@@ -9,8 +9,8 @@ serve:
 migrate:
 	php artisan migrate
 
-seed:
-	php artisan migrate:fresh --seed
+refresh:
+	php artisan eshop:refresh
 
 console:
 	php artisan tinker
