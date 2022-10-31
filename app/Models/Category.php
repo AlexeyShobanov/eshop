@@ -17,6 +17,11 @@ class Category extends Model
         'slug',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+    }
+
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);

@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
         });  // позволяет мониторить каждый запрос к БД (в том число время или тело запроса)
 
 //        обработка ситуации с долгим request
-//        $kernel = app(Kernel::class);
         app(Kernel::class)->whenRequestLifecycleIsLongerThan(
             CarbonInterval::second(5),
             function () {

@@ -6,20 +6,21 @@ namespace App\Fake;
 
 use Faker\Provider\Base;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 final class FakerImageProvider extends Base
 {
-    public function addFakeImagePath($srcPath, $storagePath): string
+    public function fixturesImage(string $fixturesDir, string $storageDir): string
     {
-        if (Storage::missing($storagePath)) {
-            Storage::makeDirectory($storagePath);
+        if (Storage::missing($storageDir)) {
+            Storage::makeDirectory($storageDir);
         }
-        $fileName = Str::random(6) . '.jpg';
-        $nameFakeFile = Storage::path($storagePath) . '/' . $fileName;
-        $files = glob(base_path($srcPath) . '/*.*');
-        $fileIndex = array_rand($files);
-        copy($files[$fileIndex], $nameFakeFile);
-        return "/storage/$storagePath/$fileName";
+
+        $file = $this->generator->file(
+            base_path("tests/Fixtures/images/$fixturesDir"),
+            Storage::path($storageDir),
+            false
+        );
+
+        return '/storage/' . trim($storageDir) . '/' . $file;
     }
 }

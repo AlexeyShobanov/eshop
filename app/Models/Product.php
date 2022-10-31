@@ -22,6 +22,10 @@ class Product extends Model
     ];
 
     //    создаем генерацию слага в boot - теперь этоного нет, вынесено в трейт HasSlug
+    protected static function boot()
+    {
+        parent::boot();
+    }
 
     public function brand(): BelongsTo
     {

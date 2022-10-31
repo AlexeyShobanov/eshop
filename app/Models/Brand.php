@@ -18,6 +18,11 @@ class Brand extends Model
         'thumbnail',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

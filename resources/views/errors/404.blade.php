@@ -10,7 +10,7 @@
                 можете
                 вернуться на главную страницу.</p>
             <div class="mt-8 text-center">
-                <a href="{{ route("main") }}" class="btn btn-pink" rel="home">Вернутся на главную</a>
+                <a href="{{ route("home") }}" class="btn btn-pink" rel="home">Вернутся на главную</a>
             </div>
 
         </div>

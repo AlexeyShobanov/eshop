@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Http\Response;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +18,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -48,11 +48,16 @@ class RouteServiceProvider extends ServiceProvider
     {
 //      кастомный рейтлимит для запросов к сайту
         RateLimiter::for('global', function (Request $request) {
-            return Limit::perMinute(500)
+            return Limit::perMinute(1000)
                 ->by($request->user()?->id ?: $request->ip())
                 ->response(function (Request $request, array $headers) {
                     return response('Take it easy', Response::HTTP_TOO_MANY_REQUESTS, $headers);
                 });
+        });
+
+//        кастомный рейтлимит для страницы с аутентификацией
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(20)->by($request->ip());
         });
 
         RateLimiter::for('api', function (Request $request) {
