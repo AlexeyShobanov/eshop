@@ -23,12 +23,6 @@ test:
 	php artisan config:clear
 	php artisan test
 
-coverage:
-	php artisan test --coverage-clover ./build/logs/clover.xml
-
-deploy:
-	git push heroku
-
 lint:
 	composer phpcs -- --standard=PSR12 app routes tests
 

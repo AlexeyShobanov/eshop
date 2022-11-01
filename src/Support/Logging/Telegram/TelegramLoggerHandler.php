@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Logging\Telegram;
+namespace Support\Logging\Telegram;
 
-use App\Services\Telegram\Exceptions\TelegramBotApiException;
-use App\Services\Telegram\TelegramBotApi;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
+use Services\Telegram\Exceptions\TelegramBotApiException;
+use Services\Telegram\TelegramBotApi;
 
 final class TelegramLoggerHandler extends AbstractProcessingHandler
 {
