@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use DomainException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Psr\Log\LogLevel;
 use Throwable;
@@ -45,8 +46,10 @@ class Handler extends ExceptionHandler
             }
         });
 
-//        $this->renderable(function (NotFoundHttpException $e) {
-//            return response()->view('errors/404');
-//        });
+        $this->renderable(function (DomainException $e) {
+            flash()->alert($e->getMessage());
+            
+            return back();
+        });
     }
 }

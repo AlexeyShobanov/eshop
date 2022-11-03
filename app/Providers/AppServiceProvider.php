@@ -6,7 +6,9 @@ use App\Http\Kernel;
 use Carbon\CarbonInterval;
 use Faker\Factory;
 use Faker\Generator;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Support\Testing\FakerImageProvider;
@@ -36,6 +38,14 @@ class AppServiceProvider extends ServiceProvider
                     ->debug('whenRequestLifecycleIsLongerThan: ' . request()->url());
             }
         );
+
+//      кастомизация отправленного сообщения на подтвеждение e-mail
+        VerifyEmail::toMailUsing(function ($notifiable, $url) {
+            return (new MailMessage)
+                ->subject('Подтверждение e-mail')
+                ->line('Нажмите для подтверждения')
+                ->action('Поддтвердить', $url);
+        });
     }
 
     public function register()
