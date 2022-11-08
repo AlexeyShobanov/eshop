@@ -36,6 +36,7 @@ class SocialAuthController extends Controller
         ], [
             'name' => $githubUser->name ?? $githubUser->email, // если нет имени можно отдать email
             'email' => $githubUser->email,
+            'email_verified_at' => now(),
             'password' => bcrypt(str()->random(10)),
         ]);
 

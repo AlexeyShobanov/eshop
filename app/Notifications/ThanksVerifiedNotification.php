@@ -3,12 +3,10 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewUserNotification extends Notification implements
-    ShouldQueue // добавление implements ShouldQueue говорит, что идет отправление через очереди
+class ThanksVerifiedNotification extends Notification
 {
     use Queueable;
 
@@ -42,8 +40,7 @@ class NewUserNotification extends Notification implements
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('Добро пожаловать!')
-            ->action('Вернуться к нам', url('/'));
+            ->line('Спасибо за подтверждение.');
     }
 
     /**
