@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\App\Http\Controllers;
+namespace Tests\Feature\App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Requests\ResetPasswordFormRequest;
@@ -12,9 +12,24 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 
+use function action;
+use function bcrypt;
+use function route;
+
 class ResetPasswordControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    private string $token;
+    private User $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = UserFactory::new()->create();
+        $this->token = Password::createToken($this->user);
+    }
 
     /**
      * @test
@@ -22,9 +37,7 @@ class ResetPasswordControllerTest extends TestCase
      */
     public function it_reset_password_page_success(): void
     {
-        $token = '12345';
-
-        $this->get(action([ResetPasswordController::class, 'page'], $token))
+        $this->get(action([ResetPasswordController::class, 'page'], $this->token))
             ->assertOk()
             ->assertSee('Восстановление пароля')
             ->assertViewIs('auth.reset-password');
@@ -40,26 +53,20 @@ class ResetPasswordControllerTest extends TestCase
 
         $password = bcrypt('1234567890');
 
-        $user = UserFactory::new()->create([
-            'email' => 'testing@cutcode.ru',
-            'password' => $password,
-        ]);
-
-        $this->assertEquals($password, $user->password);
-
-        $token = Password::broker()->createToken($user);
-
         $request = ResetPasswordFormRequest::factory()->create([
-            'email' => $user->email,
-            'token' => $token
+            'email' => $this->user->email,
+            'password' => $password,
+            'password_confirmation' => $password,
+            'token' => $this->token
         ]);
+
         $response = $this->post(
             action([ResetPasswordController::class, 'handle']),
             $request
         );
 
         $userWithNewPass = User::query()
-            ->find($user->id);
+            ->find($this->user->id);
 
 
         $this->assertNotEquals($password, $userWithNewPass->password);
@@ -76,24 +83,17 @@ class ResetPasswordControllerTest extends TestCase
      */
     public function it_reset_password_handle_valid_pass_failed(): void
     {
-        Event::fake();
-
         $password = bcrypt('1234567890');
 
-        $user = UserFactory::new()->create([
-            'email' => 'testing@cutcode.ru',
-            'password' => $password,
-        ]);
+        $this->user->password = $password;
 
-        $this->assertEquals($password, $user->password);
-
-        $token = Password::broker()->createToken($user);
+        $this->assertEquals($password, $this->user->password);
 
         $request = ResetPasswordFormRequest::factory()->create([
-            'email' => $user->email,
+            'email' => $this->user->email,
             'password' => '12345',
             'password_confirmation' => '12345',
-            'token' => $token
+            'token' => $this->token
         ]);
         $response = $this->post(
             action([ResetPasswordController::class, 'handle']),
@@ -109,29 +109,16 @@ class ResetPasswordControllerTest extends TestCase
      */
     public function it_reset_password_handle_valid_confirm_pass_failed(): void
     {
-        Event::fake();
-
-        $password = bcrypt('1234567890');
-
-        $user = UserFactory::new()->create([
-            'email' => 'testing@cutcode.ru',
-            'password' => $password,
-        ]);
-
-        $this->assertEquals($password, $user->password);
-
-        $token = Password::broker()->createToken($user);
-
         $request = ResetPasswordFormRequest::factory()->create([
-            'email' => $user->email,
+            'email' => $this->user->email,
             'password' => '12345',
-            'token' => $token
+            'token' => $this->token
         ]);
         $response = $this->post(
             action([ResetPasswordController::class, 'handle']),
             $request
         );
 
-        $response->assertInvalid();
+        $response->assertInvalid(['password']);
     }
 }

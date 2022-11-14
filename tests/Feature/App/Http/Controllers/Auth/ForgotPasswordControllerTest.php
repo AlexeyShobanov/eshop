@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\App\Http\Controllers;
+namespace Tests\Feature\App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Requests\ResetPasswordFormRequest;
@@ -10,6 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
+
+use function action;
 
 class ForgotPasswordControllerTest extends TestCase
 {
@@ -53,10 +55,8 @@ class ForgotPasswordControllerTest extends TestCase
      * @test
      * @return  void
      */
-    public function it_forgot_password_handle_failure(): void
+    public function it_forgot_password_handle_fail(): void
     {
-        Notification::fake();  //подменяем все Notification на фейк (на уровне фасада)
-        Event::fake();
         UserFactory::new()->create([
             'email' => 'testing@cutcode.ru',
         ]);
@@ -67,5 +67,7 @@ class ForgotPasswordControllerTest extends TestCase
 
         $this->post(action([ForgotPasswordController::class, 'handle']), $request)
             ->assertInvalid();
+
+        Notification::assertNothingSent();
     }
 }

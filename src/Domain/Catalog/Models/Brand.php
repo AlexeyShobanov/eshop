@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Models;
+namespace Domain\Catalog\Models;
 
-use App\Traits\Models\HasSlug;
-use App\Traits\Models\HasThumbnail;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Product;
+use Domain\Catalog\QueryBuilders\BrandQueryBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Support\Traits\Models\HasSlug;
+use Support\Traits\Models\HasThumbnail;
 
+
+/**
+ * @method static Brand|BrandQueryBuilder query()
+ */
 class Brand extends Model
 {
     use HasFactory;
@@ -28,13 +33,18 @@ class Brand extends Model
         return 'brands';
     }
 
-//    создаем скоп для главной страницы
-    public function scopeHomePage(Builder $query)
+    public function newEloquentBuilder($query): BrandQueryBuilder
     {
-        $query->where('on_home_page', true)
-            ->orderBy('sorting')
-            ->limit(6);
+        return new BrandQueryBuilder($query);
     }
+
+//    вынесено в  QueryBuilder
+//    public function scopeHomePage(Builder $query)
+//    {
+//        $query->where('on_home_page', true)
+//            ->orderBy('sorting')
+//            ->limit(6);
+//    }
 
     protected static function boot()
     {

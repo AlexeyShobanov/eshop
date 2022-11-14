@@ -7,9 +7,15 @@ use Illuminate\Auth\Events\Registered;
 
 class SendEmailNewUserListener
 {
-    public function handle(Registered $event)
+
+    /**
+     * Handle the event.
+     *
+     * @param Registered $event
+     * @return void
+     */
+    public function handle(Registered $event): void
     {
-        $event -
-        user->notify(new NewUserNotification());
+        $event->user->notify(new NewUserNotification());
     }
 }

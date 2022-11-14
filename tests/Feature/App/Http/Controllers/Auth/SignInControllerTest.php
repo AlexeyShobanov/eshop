@@ -1,12 +1,16 @@
 <?php
 
-namespace Tests\Feature\App\Http\Controllers;
+namespace Tests\Feature\App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Auth\SignInController;
 use App\Http\Requests\SignInFormRequest;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+
+use function action;
+use function bcrypt;
+use function route;
 
 class SignInControllerTest extends TestCase
 {
@@ -68,7 +72,7 @@ class SignInControllerTest extends TestCase
 
         $response = $this->post(action([SignInController::class, 'handle']), $request);
 
-        $response->assertInvalid();
+        $response->assertInvalid(['email']);
     }
 
     /**
@@ -90,7 +94,7 @@ class SignInControllerTest extends TestCase
 
         $response = $this->post(action([SignInController::class, 'handle']), $request);
 
-        $response->assertInvalid();
+        $response->assertInvalid(['email']);
     }
 
     /**
@@ -107,5 +111,15 @@ class SignInControllerTest extends TestCase
         ->delete(action([SignInController::class, 'logOut']));
 
         $this->assertGuest();
+    }
+
+    /**
+     * @test
+     * @return  void
+     */
+    public function it_logout_guest_middleware_fail(): void
+    {
+        $this->delete(action([SignInController::class, 'logOut']))
+            ->assertRedirect(route('home'));
     }
 }

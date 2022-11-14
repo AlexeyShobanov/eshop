@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Feature\App\Http\Controllers;
+namespace Tests\Feature\App\Http\Controllers\Auth;
 
 use Tests\TestCase;
+
 
 class SocialAuthControllerTest extends TestCase
 {

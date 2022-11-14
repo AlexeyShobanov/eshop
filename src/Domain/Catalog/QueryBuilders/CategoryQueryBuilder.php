@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Domain\Catalog\QueryBuilders;
+
+use Illuminate\Database\Eloquent\Builder;
+
+final class CategoryQueryBuilder extends Builder
+{
+    //    создаем скоп для главной страницы
+    public function homePage(): CategoryQueryBuilder
+    {
+        return $this->select(['id', 'title', 'slug'])->where('on_home_page', true)
+            ->orderBy('sorting')
+            ->limit(5);
+    }
+
+
+}
