@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Support\Casts\PriceCast;
 use Support\Traits\Models\HasSlug;
 use Support\Traits\Models\HasThumbnail;
+use Support\ValueObjects\Price;
 
 class Product extends Model
 {
@@ -36,6 +37,34 @@ class Product extends Model
     protected function thumbnailDir(): string
     {
         return 'products';
+    }
+
+    //    скоп для фильтра
+    public function scopeFiltered(Builder $query)
+    {
+        $query->when(request('filters.brands'), function (Builder $q) {
+            $q->whereIn('brand_id', request('filters.brands'));
+        })->when(request('filters.price'), function (Builder $q) {
+            $q->whereBetween('price', [
+                Price::make((int)request('filters.price.from', 0))->fullValue(),
+                Price::make((int)request('filters.price.to', 100000))->fullValue()
+//                request('filters.price.from', 0) * 100,
+//                request('filters.price.to', 100000) * 100
+            ]);
+        });
+    }
+
+    //    скоп для сортировки
+    public function scopeSorted(Builder $query)
+    {
+        $query->when(request('sort'), function (Builder $q) {
+            $column = request()->str('sort');
+
+            if ($column->contains(['price', 'title'])) {
+                $direction = $column->contains('-') ? 'DESC' : 'ASC';
+                $q->orderBy((string)$column->remove('-'), $direction);
+            }
+        });
     }
 
     //    создаем скоп для главной страницы

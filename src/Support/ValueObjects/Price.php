@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Support\ValueObjests;
+namespace Support\ValueObjects;
 
 use InvalidArgumentException;
 use Stringable;
@@ -30,6 +30,12 @@ final class Price implements Stringable
         if (!$this->currencies[$this->currency]) {
             throw new InvalidArgumentException('Currency not allowed');
         }
+    }
+
+    // возвращает полное занчение как int
+    public function fullValue(): int
+    {
+        return $this->value * $this->precision;
     }
 
     // возвращает значение как int

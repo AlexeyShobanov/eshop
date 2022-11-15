@@ -21,4 +21,14 @@ final class BrandViewModel
                 ->get();
         });
     }
+
+    public function catalogPage(): Collection|array
+    {
+        return Cache::rememberForever('brand_catalog_page', function () {
+            return Brand::query()
+                ->select(['id', 'title'])
+                ->has('products')
+                ->get();
+        });
+    }
 }

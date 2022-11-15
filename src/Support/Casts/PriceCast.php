@@ -3,7 +3,7 @@
 namespace Support\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Support\ValueObjests\Price;
+use Support\ValueObjects\Price;
 
 class PriceCast implements CastsAttributes
 {

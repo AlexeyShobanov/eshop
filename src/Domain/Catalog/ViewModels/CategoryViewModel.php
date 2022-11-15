@@ -21,4 +21,14 @@ final class CategoryViewModel
                 ->get();
         });
     }
+
+    public function catalogPage(): Collection|array
+    {
+        return Cache::rememberForever('category_catalog_page', function () {
+            return Category::query()
+                ->select(['id', 'title', 'slug'])
+                ->has('products')
+                ->get();
+        });
+    }
 }

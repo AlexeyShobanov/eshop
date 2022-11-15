@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Support;
 
 use InvalidArgumentException;
-use Support\ValueObjests\Price;
+use Support\ValueObjects\Price;
 use Tests\TestCase;
 
 final class PriceTest extends TestCase
