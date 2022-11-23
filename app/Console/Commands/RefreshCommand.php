@@ -16,6 +16,8 @@ class RefreshCommand extends Command
             return self::FAILURE;
         }
 
+        $this->call('cache:clear');  // в случае использования в проекте кэша это необходимо, чтобы сбросить кеш
+
         Storage::deleteDirectory('images/products');
         Storage::deleteDirectory('images/brands');
 

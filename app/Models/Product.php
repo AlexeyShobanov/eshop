@@ -9,16 +9,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Scout\Searchable;
 use Support\Casts\PriceCast;
 use Support\Traits\Models\HasSlug;
 use Support\Traits\Models\HasThumbnail;
-use Support\ValueObjects\Price;
 
 class Product extends Model
 {
     use HasFactory;
     use HasSlug;
     use HasThumbnail;
+    use Searchable;
 
     protected $fillable = [
         'title',
@@ -28,6 +29,7 @@ class Product extends Model
         'price',
         'on_home_page',
         'sorting',
+        'text'
     ];
 
     protected $casts = [
@@ -39,19 +41,35 @@ class Product extends Model
         return 'products';
     }
 
+//    // поля поиска для scout
+//    #[SearchUsingFullText(['title', 'text'])]
+//    public function toSearchableArray()
+//    {
+//        return [
+//            'title' => $this->title,
+//            'text' => $this->text
+//        ];
+//    }
+
     //    скоп для фильтра
     public function scopeFiltered(Builder $query)
     {
-        $query->when(request('filters.brands'), function (Builder $q) {
-            $q->whereIn('brand_id', request('filters.brands'));
-        })->when(request('filters.price'), function (Builder $q) {
-            $q->whereBetween('price', [
-                Price::make((int)request('filters.price.from', 0))->fullValue(),
-                Price::make((int)request('filters.price.to', 100000))->fullValue()
-//                request('filters.price.from', 0) * 100,
-//                request('filters.price.to', 100000) * 100
-            ]);
-        });
+//        это реализация филтра через скоп
+//        $query->when(request('filters.brands'), function (Builder $q) {
+//            $q->whereIn('brand_id', request('filters.brands'));
+//        })->when(request('filters.price'), function (Builder $q) {
+//            $q->whereBetween('price', [
+//                Price::make((int)request('filters.price.from', 0))->fullValue(),
+//                Price::make((int)request('filters.price.to', 100000))->fullValue()
+////                request('filters.price.from', 0) * 100,
+////                request('filters.price.to', 100000) * 100
+//            ]);
+//        });
+
+        // это реализация через класс
+        foreach (filters() as $filter) {
+            $query = $filter->apply($query);
+        }
     }
 
     //    скоп для сортировки
@@ -89,5 +107,16 @@ class Product extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function properties(): BelongsToMany
+    {
+        return $this->belongsToMany(Property::class)
+            ->withPivot('value');
+    }
+
+    public function optionValues(): BelongsToMany
+    {
+        return $this->belongsToMany(OptionValue::class);
     }
 }

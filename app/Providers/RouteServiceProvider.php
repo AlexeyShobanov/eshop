@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Routing\AppRegistrar;
 use App\Routing\AuthRegistrar;
 use App\Routing\CatalogRegistrar;
+use App\Routing\ProductRegistrar;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -29,6 +30,7 @@ class RouteServiceProvider extends ServiceProvider
         AppRegistrar::class,
         AuthRegistrar::class,
         CatalogRegistrar::class,
+        ProductRegistrar::class,
     ];
 
     /**
@@ -71,6 +73,7 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
+//   карта роутов для DDD
     protected function mapRoutes(Registrar $router, array $registrars): void
     {
         foreach ($registrars as $registrar) {
@@ -86,6 +89,4 @@ class RouteServiceProvider extends ServiceProvider
             (new $registrar)->map($router);
         }
     }
-
-
 }

@@ -37,50 +37,12 @@
             <aside class="basis-2/5 xl:basis-1/4">
                 <form action="{{ route('catalog', $category) }}"
                       class="overflow-auto max-h-[320px] lg:max-h-[100%] space-y-10 p-6 2xl:p-8 rounded-2xl bg-card">
-                    <!-- Filter item -->
-                    <div>
-                        <h5 class="mb-4 text-sm 2xl:text-md font-bold">Цена</h5>
-                        <div class="flex items-center justify-between gap-3 mb-2">
-                            <span class="text-body text-xxs font-medium">От, ₽</span>
-                            <span class="text-body text-xxs font-medium">До, ₽</span>
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <input name="filters[price][from]"
-                                   {{--  второе значение в request - это значение по-умолчанию  --}}
-                                   value="{{ request('filters.price.from', 0) }}"
-                                   type="number"
-                                   class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
-                                   placeholder="От"
-                            >
-                            <span class="text-body text-sm font-medium">–</span>
-                            <input name="filters[price][to]"
-                                   value="{{ request('filters.price.to', 100000) }}"
-                                   type="number"
-                                   class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
-                                   placeholder="До"
-                            >
-                        </div>
-                    </div>
-                    <!-- Filter item -->
-                    <div>
-                        <h5 class="mb-4 text-sm 2xl:text-md font-bold">Бренд</h5>
-
-                        @foreach($brands as $brand)
-                            <div class="form-checkbox">
-                                <input name="filters[brands][{{ $brand->id }}]"
-                                       type="checkbox"
-                                       value="{{ $brand->id }}"
-                                       @checked(request('filters.brands.'.$brand->id))
-                                id="filters-brands-{{ $brand->id }}"
-                                >
-                                <label for="filters-brands-{{ $brand->id }}" class="form-checkbox-label">
-                                    {{ $brand->title }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
-
+                    {{--    для того чтобы сохранялась сортировка при фильтрации сохраняем ее значение в форме  --}}
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                    @foreach(filters() as $filter)
+                        {{--                    @include($filter->view(), ['$filter' => $filter])--}}
+                        {!! $filter !!}
+                    @endforeach
                     <div>
                         <button type="submit" class="w-full !h-16 btn btn-pink">Поиск</button>
                     </div>
@@ -127,11 +89,13 @@
                     <div x-data="{}" class="flex flex-col sm:flex-row sm:items-center gap-3">
                         <span class="text-body text-xxs sm:text-xs">Сортировать по</span>
                         <form x-ref="sortForm" action="{{ route('catalog', $category) }}">
+
+                            {{--  sort filter --}}
                             <select
-                                name="sort"
-                                x-on:change="$refs.sortForm.submit()"
-                                class="form-select w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xxs sm:text-xs shadow-transparent outline-0 transition">
-                                <option value="" class="text-dark">умолчанию</option>
+                                    name="sort"
+                                    x-on:change="$refs.sortForm.submit()"
+                                    class="form-select w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xxs sm:text-xs shadow-transparent outline-0 transition">
+                                <option value="" class="text-dark">по-умолчанию</option>
                                 <option @selected(request(
                                 'sort') === 'price') value="price" class="text-dark">от дешевых к дорогим</option>
                                 <option @selected(request(
@@ -139,13 +103,15 @@
                                 <option @selected(request(
                                 'sort') === 'title') value="title" class="text-dark">наименованию</option>
                             </select>
+
+
                         </form>
                     </div>
                 </div>
 
                 <!-- Products list -->
                 <div
-                    class="products grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 2xl:gap-x-8 gap-y-8 lg:gap-y-10 2xl:gap-y-12">
+                        class="products grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 2xl:gap-x-8 gap-y-8 lg:gap-y-10 2xl:gap-y-12">
                     @each('catalog.shared.product', $products, 'item')
                 </div>
 

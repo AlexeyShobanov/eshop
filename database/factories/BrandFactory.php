@@ -19,7 +19,7 @@ class BrandFactory extends Factory
 //            TODO 3rd lesson
             'thumbnail' => $this->faker->fixturesImage(
                 'brands',
-                'images/brands'
+                'brands'
             ),
             'on_home_page' => $this->faker->boolean(),
             'sorting' => $this->faker->numberBetween(1, 999),
