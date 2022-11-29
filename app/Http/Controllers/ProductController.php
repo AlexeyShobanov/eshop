@@ -19,13 +19,14 @@ class ProductController extends Controller
         });
 
         if (session()->has('also')) {
-            $listProductId = collect(session()->get('also'));
-            $listProductIdMod = $listProductId->filter(function ($value) use ($product) {
-                return $value !== $product->id;
-            });
-            $viewedProducts = Product::query()->whereIn('id', $listProductIdMod)->limit(4)->get();
+            $viewedProducts = Product::query()->where(function ($q) use ($product) {
+                $q->whereIn('id', session('also'))
+                    ->where('id', '!=', $product->id);
+            })
+                ->limit(4)
+                ->get();
         }
-        // можно реализовать сохранение просмотренных товаров через сессии
+
         session()->put('also.' . $product->id, $product->id);
 
         return view('product.show', [

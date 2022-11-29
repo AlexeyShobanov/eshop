@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Domain\Catalog\Facades\Sorter;
 use Domain\Catalog\Models\Brand;
 use Domain\Catalog\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
@@ -73,16 +74,22 @@ class Product extends Model
     }
 
     //    скоп для сортировки
+//    public function scopeSorted(Builder $query)
+//    {
+//        $query->when(request('sort'), function (Builder $q) {
+//            $column = request()->str('sort');
+//
+//            if ($column->contains(['price', 'title'])) {
+//                $direction = $column->contains('-') ? 'DESC' : 'ASC';
+//                $q->orderBy((string)$column->remove('-'), $direction);
+//            }
+//        });
+//    }
+
     public function scopeSorted(Builder $query)
     {
-        $query->when(request('sort'), function (Builder $q) {
-            $column = request()->str('sort');
-
-            if ($column->contains(['price', 'title'])) {
-                $direction = $column->contains('-') ? 'DESC' : 'ASC';
-                $q->orderBy((string)$column->remove('-'), $direction);
-            }
-        });
+//        sorter()->run($query);
+        Sorter::run($query);
     }
 
     //    создаем скоп для главной страницы
