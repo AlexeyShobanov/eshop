@@ -7,7 +7,6 @@ use Carbon\CarbonInterval;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -17,9 +16,9 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        Model::shouldBeStrict(
-            !app()->isProduction()
-        ); // содержит методы preventLazyLoading и preventSilentlyDiscardingAttributes плюс
+//        Model::shouldBeStrict(
+//            !app()->isProduction()
+//        ); // содержит методы preventLazyLoading и preventSilentlyDiscardingAttributes плюс
 
         DB::listen(function ($query) {
             if ($query->time > 500) {

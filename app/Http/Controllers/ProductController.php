@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use Domain\Product\Models\Product;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -14,9 +14,10 @@ class ProductController extends Controller
         // создаем eager load для Option через optionValues у Product
         $product->load(['optionValues.option']);
 
-        $options = $product->optionValues->mapToGroups(function ($item) {
-            return [$item->option->title => $item];
-        });
+//      Вынесено в кастомную коллекцию
+//        $options = $product->optionValues->mapToGroups(function ($item) {
+//            return [$item->option->title => $item];
+//        });
 
         if (session()->has('also')) {
             $viewedProducts = Product::query()->where(function ($q) use ($product) {
@@ -31,8 +32,8 @@ class ProductController extends Controller
 
         return view('product.show', [
             'product' => $product,
-            'options' => $options,
-            'viewedProducts' => $viewedProducts ?? $viewedProducts,
+            'options' => $product->optionValues->keyValues(),
+            'viewedProducts' => $viewedProducts ?? [],
         ]);
     }
 }
