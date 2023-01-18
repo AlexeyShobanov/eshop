@@ -48,8 +48,11 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (DomainException $e) {
             flash()->alert($e->getMessage());
-            
-            return back();
+
+            // делаем проверку наличия предыдущего угла (через сессию) и далее определяем куда редирект
+            return session()->previousUrl()
+                ? back()
+                : redirect()->route('home');
         });
     }
 }
